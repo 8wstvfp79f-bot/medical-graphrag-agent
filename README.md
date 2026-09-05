@@ -288,7 +288,7 @@ python -m unittest discover -s tests -v
 | Phase 8: Answer API | Complete | 可替换 AnswerGenerator；抽取式带引用答案；FastAPI `/health`/`/chat`；JSON/SSE；async 双路检索；真实双库 HTTP 验收 |
 | Phase 8.1: Data Quality Hardening | Complete | 统一字段策略、版本化拒绝配置、243条审计、字段级去重、Planner intents直传、双数据库同步、真实 `/chat` 污染词为0 |
 | Phase 9: Evaluation | Complete | 250题/587参考实体；500次双路实库评测；Top-3/MRR/Recall；500/500条真实Judge评分 |
-| Phase 10: Resume Metrics | Complete | 548,982条隔离候选关系；SSE TTFB实测；真实LLM生成/Judge；语义幻觉率相对下降40.3% |
+| Phase 10: Metrics | Complete | 548,982条隔离候选关系；SSE TTFB实测；真实LLM生成/Judge；语义幻觉率相对下降40.3% |
 
 ## Development Roadmap
 
