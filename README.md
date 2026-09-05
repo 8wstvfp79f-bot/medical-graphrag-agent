@@ -273,25 +273,6 @@ python -m unittest discover -s tests -v
 
 详细口径见 `docs/relation_stats.md`。本仓库只包含医疗 GraphRAG 项目实现；Agent Evaluation / Reward Modeling 保持为独立仓库。
 
-## Resume Mapping
-
-| 简历关键词 | 本项目中的职责与证据 |
-| --- | --- |
-| LlamaIndex | 文档加载、Node/Chunk 编排及检索组件接入层；当前 chunk JSONL 可作为接入输入 |
-| Milvus | collection schema、AUTOINDEX、20,801 条干净 BGE 向量批量写入、Top-K search 与 metadata JSON filter 下推；逻辑/存储计数均已真实验收 |
-| Neo4j | 六类 typed node 唯一性约束、`UNWIND + MERGE` 批量幂等导入、24,237 typed nodes、182,565 条真实核心关系、关系白名单与结构化 graph evidence |
-| BGE-Reranker | 已用本地 `BAAI/bge-reranker-base` Cross-Encoder 对 Vector + Graph 融合候选打分，保留召回/重排双名次与排除原因 |
-| Hybrid Retrieval | 已用 Weighted RRF 合并 Milvus chunks 与 Neo4j graph evidence，包含统一 schema、跨路去重、provenance、配额与显式降级 |
-| Context Budget | 已按重排顺序、token 上限、条数上限和 Vector/Graph 最低配额构建带 E1-En 引用的上下文；返回完整预算统计 |
-| Function Calling | 已落地 `vector_search / graph_search / hybrid_search` strict JSON schemas、参数校验、疾病/意图规划、工具路由和 tool_calls 审计；规则规划器可替换为 LLM，但执行前仍走同一校验器 |
-| FastAPI | 已落地 `/health` 与 `/chat`；后者接收严格 JSON 请求并返回 answer、sources、evidence、tool_calls、request_id 等结构化字段 |
-| asyncio | 已并发执行相互独立的 Milvus 向量检索与 Neo4j 图谱检索，并用并发上限保护共享本地模型 |
-| SSE | `/chat`已传输命名事件；20次实测TTFB P50/P95 1.3/11.2ms，首回答Token 55.4/64.8ms |
-| LLM-as-a-Judge | 本地`qwen2.5-7b-instruct`完成500/500条真实评分；严格结果schema、超长证据精简、校验修复、失败检查与断点续跑均已落地 |
-| Top-3 Hit Rate | 250题实库对照：Vector-only原始/重排后96.8%/97.6%，Hybrid原始/重排后100.0%/99.6% |
-| 幻觉率评估 | Faithfulness阈值0.8；Vector-only/Hybrid语义幻觉题目占比49.6%/29.6%，绝对下降20.0个百分点、相对下降40.3%；同模型Judge且非临床标注 |
-
-上表是项目一的完整能力映射。当前提交已落地数据质量、20,801条真实BGE向量、24,237个Neo4j typed nodes、182,565条正式核心关系、548,982条隔离候选关系、Hybrid Retrieval、BGE-Reranker、Context Budget、Function Calling、FastAPI JSON/SSE、250题双路实库评测、500个真实LLM回答及500条真实Judge评分。实测相对下降为40.3%，不再沿用预设的35%；使用时必须同时说明Judge模型、阈值、测试集来源与限制。
 
 ## Current Progress
 
