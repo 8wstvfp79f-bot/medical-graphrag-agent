@@ -242,7 +242,6 @@ python -m src.evaluation.runner
 python -m src.evaluation.judge_runner --concurrency 1 --fail-on-error
 ```
 
-机器可读结果位于 `results/evaluation/phase9_metrics.json`（该目录默认不提交），可提交的汇总报告见 `docs/evaluation_report.md`。
 
 ## Folder Structure
 
