@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Medical GraphRAG Agent 本地演示界面" />
+    <title>Medical GraphRAG Agent</title>
+    <link rel="stylesheet" href="/assets/styles.css" />
+  </head>
+  <body>
+    <div class="ambient ambient-one"></div>
+    <div class="ambient ambient-two"></div>
+    <main class="shell">
+      <header class="hero">
+        <div>
+          <p class="eyebrow">MEDICAL KNOWLEDGE AGENT</p>
+          <h1>Medical <span>GraphRAG</span></h1>
+          <p class="subtitle">Milvus 语义召回 × Neo4j 医学关系 × BGE 重排 × 有据可查的回答</p>
+        </div>
+        <div id="healthBadge" class="health checking"><i></i><span>正在检查服务</span></div>
+      </header>
+
+      <section class="grid">
+        <article class="panel ask-panel">
+          <div class="panel-heading">
+            <div>
+              <p class="section-label">ASK</p>
+              <h2>向知识库提问</h2>
+            </div>
+            <a href="/docs" target="_blank" rel="noreferrer">API 文档 ↗</a>
+          </div>
+
+          <form id="chatForm">
+            <label for="query">问题</label>
+            <textarea id="query" maxlength="1000" required>百日咳有哪些典型症状？</textarea>
+
+            <div class="form-row">
+              <div>
+                <label for="disease">疾病名（推荐）</label>
+                <input id="disease" value="百日咳" placeholder="例如：百日咳" />
+              </div>
+              <div>
+                <label for="topK">候选证据数</label>
+                <select id="topK">
+                  <option value="6">6</option>
+                  <option value="10" selected>10</option>
+                  <option value="15">15</option>
+                </select>
+              </div>
+            </div>
+
+            <details>
+              <summary>Metadata Filtering（可选）</summary>
+              <div class="form-row filters">
+                <input id="department" placeholder="科室，例如：呼吸内科" />
+                <input id="category" placeholder="类别，例如：疾病百科" />
+              </div>
+            </details>
+
+            <div class="quick-list" aria-label="示例问题">
+              <button type="button" data-question="百日咳通常需要做哪些检查？" data-disease="百日咳">检查</button>
+              <button type="button" data-question="百日咳有哪些治疗方式？" data-disease="百日咳">治疗</button>
+              <button type="button" data-question="百日咳应该挂什么科？" data-disease="百日咳">科室</button>
+              <button type="button" data-question="百日咳可能有哪些并发症？" data-disease="百日咳">并发症</button>
+            </div>
+
+            <button id="submitButton" class="primary" type="submit">
+              <span>检索并生成回答</span><b>→</b>
+            </button>
+          </form>
+        </article>
+
+        <article class="panel result-panel">
+          <div class="panel-heading">
+            <div>
+              <p class="section-label">ANSWER</p>
+              <h2>带引用回答</h2>
+            </div>
+            <span id="modeBadge" class="mode-badge">等待提问</span>
+          </div>
+
+          <div id="emptyState" class="empty-state">
+            <div class="orbit"><span></span></div>
+            <h3>证据链尚未启动</h3>
+            <p>提交问题后，这里会展示回答、检索路线和证据来源。</p>
+          </div>
+
+          <div id="loadingState" class="loading-state hidden">
+            <div class="loader"></div>
+            <p>正在规划意图、检索双数据库并重排证据…</p>
+          </div>
+
+          <div id="resultState" class="hidden">
+            <div id="answer" class="answer"></div>
+            <div class="stats" id="stats"></div>
+            <h3 class="evidence-title">证据清单</h3>
+            <div id="evidenceList" class="evidence-list"></div>
+          </div>
+
+          <div id="errorState" class="error-state hidden"></div>
+        </article>
+      </section>
+
+      <section class="pipeline" aria-label="项目数据流">
+        <div><b>01</b><span>问题与过滤条件</span></div>
+        <i>→</i>
+        <div><b>02</b><span>Milvus + Neo4j</span></div>
+        <i>→</i>
+        <div><b>03</b><span>BGE-Reranker</span></div>
+        <i>→</i>
+        <div><b>04</b><span>Context Budget</span></div>
+        <i>→</i>
+        <div><b>05</b><span>LLM + Citations</span></div>
+      </section>
+
+      <footer>仅用于项目展示与健康信息参考，不能替代医生诊断。</footer>
+    </main>
+    <script src="/assets/app.js" defer></script>
+  </body>
+</html>

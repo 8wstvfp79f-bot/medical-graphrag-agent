@@ -1,0 +1,19 @@
+# Sample Medical Knowledge
+
+This file is a small learning-only sample for retrieval experiments. It is not medical advice and should not be used for diagnosis or treatment decisions.
+
+## Diabetes
+
+Definition: Diabetes is a chronic condition involving elevated blood glucose levels due to insufficient insulin production, reduced insulin action, or both.
+
+Symptoms: Common symptoms may include increased thirst, frequent urination, fatigue, blurred vision, and slow wound healing.
+
+Treatment notes: Clinical management can include lifestyle changes, blood glucose monitoring, medications, and insulin when appropriate. This sample only provides study text and does not recommend any treatment.
+
+## Hypertension
+
+Definition: Hypertension means persistently elevated blood pressure over time.
+
+Symptoms: Many people with hypertension have no noticeable symptoms. Some may report headaches, dizziness, shortness of breath, or chest discomfort, but symptoms alone cannot diagnose hypertension.
+
+Treatment notes: Clinical care may include blood pressure measurement, risk assessment, lifestyle changes, and medications selected by qualified clinicians. This sample is for learning only and is not patient guidance.

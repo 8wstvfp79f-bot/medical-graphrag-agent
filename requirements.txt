@@ -3,3 +3,8 @@ pandas
 fastapi
 uvicorn
 python-dotenv
+pymilvus>=2.4.0
+neo4j>=6.0.0,<7.0.0
+sentence-transformers>=6.0.1,<7.0.0
+torch>=2.0.0
+transformers>=5.0.0,<6.0.0

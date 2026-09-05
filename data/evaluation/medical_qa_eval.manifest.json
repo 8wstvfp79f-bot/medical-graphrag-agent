@@ -1,0 +1,16 @@
+{
+  "dataset": "C:\\Users\\ddc\\Desktop\\wxh\\work project\\work project\\medical-graphrag-agent\\data\\evaluation\\medical_qa_eval.jsonl",
+  "seed": "medical-graphrag-eval-v2",
+  "eligible_diseases": 7360,
+  "selected_diseases": 50,
+  "case_count": 250,
+  "gold_entity_references": 587,
+  "intent_distribution": {
+    "symptom": 50,
+    "diagnosis": 50,
+    "treatment": 50,
+    "department": 50,
+    "complication": 50
+  },
+  "provenance": "Deterministically derived from cleaned core triples; not independently clinician-annotated."
+}
