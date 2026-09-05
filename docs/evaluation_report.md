@@ -1,19 +1,19 @@
-# Phase 9 检索与回答评估报告
+# 第 9 阶段：检索与回答评测报告
 
 - 生成时间（UTC）：2026-09-04T14:08:01.468025+00:00
 - 固定测试集：`data/evaluation/medical_qa_eval.jsonl`（250 题）
-- Milvus collection：`medical_chunks_bge_base_zh_v15_phase5`
+- Milvus 集合：`medical_chunks_bge_base_zh_v15_phase5`
 - 测试集来源：从本项目清洗后的核心关系三元组抽取，尚未经过独立临床专家标注。
-- LLM-as-a-Judge：500/500条真实本地模型评分已完成；Vector-only/Hybrid语义幻觉题目占比49.6%/29.6%，相对下降40.3%。
+- 大模型裁判：500/500 条真实本地模型评分已完成；纯向量/混合检索语义幻觉题目占比为 49.6%/29.6%，相对下降 40.3%。
 
 ## 核心结果
 
-| 指标 | Vector-only | Hybrid（Milvus + Neo4j） |
+| 指标 | 纯向量检索 | 混合检索（Milvus + Neo4j） |
 |---|---:|---:|
 | 原始 Top-3 命中率 | 96.8% | 100.0% |
-| Rerank 后 Top-3 命中率 | 97.6% | 99.6% |
-| Rerank 后 Gold Recall@3 | 97.5% | 86.9% |
-| Metadata 正确率@3 | 100.0% | 100.0% |
+| 重排后 Top-3 命中率 | 97.6% | 99.6% |
+| 重排后固定参考实体召回率@3 | 97.5% | 86.9% |
+| 元数据正确率@3 | 100.0% | 100.0% |
 | 图关系命中率@3 | 0.0% | 95.2% |
 | 引用有效率 | 100.0% | 100.0% |
 | 回答参考实体覆盖率 | 75.6% | 82.5% |
@@ -22,35 +22,35 @@
 
 ## 平均链路耗时
 
-| 指标 | Vector-only | Hybrid（Milvus + Neo4j） |
+| 指标 | 纯向量检索 | 混合检索（Milvus + Neo4j） |
 |---|---:|---:|
 | 工具与检索后处理 | 15.1 ms | 16.5 ms |
 | 检索到回答生成完成 | 2143.4 ms | 2661.2 ms |
 
-Top-3 命中定义：前三条证据至少包含一个固定参考实体，或包含“正确疾病 + 正确核心关系”的 Neo4j 事实。Gold Recall@3 只计算固定参考实体子集，因此图谱返回同关系下其他有效实体时可能 Hit=1、Recall 不增加。
+Top-3 命中定义：前三条证据至少包含一个固定参考实体，或包含“正确疾病 + 正确核心关系”的 Neo4j 事实。固定参考实体召回率@3 只计算参考实体子集，因此图谱返回同关系下其他有效实体时可能命中，但召回率不增加。
 
-结果解读：扩展集上Hybrid提高了Top-3命中、图关系覆盖和回答参考实体覆盖；Gold Recall@3低于Vector-only，说明图谱也会补入同一关系下正确但不在固定参考子集中的实体。后续仍需独立专家标注和融合权重实验。
+结果解读：扩展测试集上，混合检索提高了 Top-3 命中、图关系覆盖和回答参考实体覆盖；固定参考实体召回率@3 低于纯向量检索，说明图谱也会补入同一关系下正确但不在固定参考子集中的实体。后续仍需独立专家标注和融合权重实验。
 
 `无证据陈述率`只检查编号陈述是否带有效引用，以及陈述能否直接回查到引用证据；它是可复现的规则代理，不等于真正的语义幻觉率。
 
-## LLM-as-a-Judge
+## 大模型裁判
 
-- Judge模型：`qwen2.5-7b-instruct`
-- Prompt版本：`medical-evidence-judge-v1`
+- 裁判模型：`qwen2.5-7b-instruct`
+- 提示词版本：`medical-evidence-judge-v1`
 - 完成/失败：500/0
-- Faithfulness阈值：0.8
-- 判定口径：存在 Unsupported Claim，或 Faithfulness 低于阈值，即记为语义幻觉题目。
+- 忠实度阈值：0.8
+- 判定口径：存在无证据支持的陈述，或忠实度低于阈值，即记为语义幻觉题目。
 
-| 指标 | Vector-only | Hybrid |
+| 指标 | 纯向量检索 | 混合检索 |
 | --- | ---: | ---: |
-| 平均 Faithfulness | 66.8% | 88.4% |
-| 平均 Relevance | 82.4% | 97.2% |
-| 平均 Completeness | 65.4% | 85.2% |
+| 平均忠实度 | 66.8% | 88.4% |
+| 平均相关性 | 82.4% | 97.2% |
+| 平均完整性 | 65.4% | 85.2% |
 | 语义幻觉题目占比 | 49.6% | 29.6% |
 
-Hybrid 的语义幻觉题目占比绝对下降 20.0 个百分点、相对下降 40.3%。该结果是模型评审，不是临床安全认证；固定集尚未经过独立临床专家标注，且生成与 Judge 使用同一模型时可能存在自评偏差。
+混合检索的语义幻觉题目占比绝对下降 20.0 个百分点、相对下降 40.3%。该结果是模型评审，不是临床安全认证；固定集尚未经过独立临床专家标注，且生成与裁判使用同一模型时可能存在自评偏差。
 
-## SSE Performance Benchmark
+## SSE 性能基准
 
 - 测试接口：`http://127.0.0.1:8000/chat`
 - 正式请求/预热：20/3
@@ -67,7 +67,7 @@ TTFB、首 SSE 事件和首回答 Token 是三个不同时间点，不能混为�
 
 ## 每题 Top-3 结果
 
-| Case | 意图 | Vector raw/rerank | Hybrid raw/rerank | Hybrid 回答覆盖 |
+| 用例 | 意图代码 | 纯向量 原始/重排 | 混合 原始/重排 | 混合回答覆盖率 |
 |---|---|---:|---:|---:|
 | case_001_symptom | symptom | 1/1 | 1/1 | 0.0% |
 | case_001_diagnosis | diagnosis | 1/1 | 1/1 | 100.0% |
@@ -328,4 +328,4 @@ TTFB、首 SSE 事件和首回答 Token 是三个不同时间点，不能混为�
 python -m src.evaluation.runner
 ```
 
-完整机器可读结果位于 `results/evaluation/phase9_metrics.json`；Judge 输入、500 条评分结果和汇总分别位于同目录的 `phase9_metrics.judge_requests.jsonl`、`phase9_metrics.judge_results.jsonl` 与 `phase9_judge_summary.json`。SSE 原始性能结果位于 `results/performance/sse_ttfb.json`。
+完整机器可读结果位于 `results/evaluation/phase9_metrics.json`；裁判模型输入、500 条评分结果和汇总分别位于同目录的 `phase9_metrics.judge_requests.jsonl`、`phase9_metrics.judge_results.jsonl` 与 `phase9_judge_summary.json`。SSE 原始性能结果位于 `results/performance/sse_ttfb.json`。

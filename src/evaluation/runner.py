@@ -281,28 +281,28 @@ def _render_markdown(report: Mapping[str, object]) -> str:
     judge = _mapping(metadata.get("llm_as_a_judge"))
     cases = _mapping_list(report.get("cases"))
     lines = [
-        "# Phase 9 检索与回答评估报告",
+        "# 第 9 阶段：检索与回答评估报告",
         "",
         f"- 生成时间（UTC）：{metadata.get('generated_at')}",
         f"- 固定测试集：`{metadata.get('dataset')}`（{metadata.get('case_count')} 题）",
-        f"- Milvus collection：`{metadata.get('milvus_collection')}`",
+        f"- Milvus 集合：`{metadata.get('milvus_collection')}`",
         "- 测试集来源：从本项目清洗后的核心关系三元组抽取，尚未经过独立临床专家标注。",
         (
-            "- LLM-as-a-Judge："
+            "- 大模型裁判（LLM-as-a-Judge）："
             f"{judge.get('status', 'not_configured')}；已导出"
-            f"{judge.get('exported_requests', 0)}条待评请求。没有真实Judge结果时不报告语义幻觉率。"
+            f"{judge.get('exported_requests', 0)}条待评请求。没有真实裁判结果时不报告语义幻觉率。"
         ),
         "",
         "## 核心结果",
         "",
-        "| 指标 | Vector-only | Hybrid（Milvus + Neo4j） |",
+        "| 指标 | 纯向量检索 | 混合检索（Milvus + Neo4j） |",
         "|---|---:|---:|",
     ]
     rows = (
         ("原始 Top-3 命中率", "raw_hit_at_3"),
-        ("Rerank 后 Top-3 命中率", "reranked_hit_at_3"),
-        ("Rerank 后 Gold Recall@3", "reranked_gold_recall_at_3"),
-        ("Metadata 正确率@3", "metadata_accuracy_at_3"),
+        ("重排后 Top-3 命中率", "reranked_hit_at_3"),
+        ("重排后参考实体召回率@3", "reranked_gold_recall_at_3"),
+        ("元数据正确率@3", "metadata_accuracy_at_3"),
         ("图关系命中率@3", "graph_relation_hit_at_3"),
         ("引用有效率", "citation_validity_rate"),
         ("回答参考实体覆盖率", "answer_gold_entity_coverage"),
@@ -316,20 +316,20 @@ def _render_markdown(report: Mapping[str, object]) -> str:
             "",
             "## 平均链路耗时",
             "",
-            "| 指标 | Vector-only | Hybrid（Milvus + Neo4j） |",
+            "| 指标 | 纯向量检索 | 混合检索（Milvus + Neo4j） |",
             "|---|---:|---:|",
             f"| 工具与检索后处理 | {float(vector.get('average_tool_latency_ms', 0)):.1f} ms | {float(hybrid.get('average_tool_latency_ms', 0)):.1f} ms |",
             f"| 检索到回答生成完成 | {float(vector.get('average_end_to_end_latency_ms', 0)):.1f} ms | {float(hybrid.get('average_end_to_end_latency_ms', 0)):.1f} ms |",
             "",
-            "Top-3 命中定义：前三条证据至少包含一个固定参考实体，或包含“正确疾病 + 正确核心关系”的 Neo4j 事实。Gold Recall@3 只计算固定参考实体子集，因此图谱返回同关系下其他有效实体时可能 Hit=1、Recall 不增加。",
+            "Top-3 命中定义：前三条证据至少包含一个固定参考实体，或包含“正确疾病 + 正确核心关系”的 Neo4j 事实。参考实体召回率@3只计算固定参考实体子集，因此图谱返回同关系下其他有效实体时可能命中成功，但召回率不增加。",
             "",
-            "结果解读：扩展集上Hybrid提高了Top-3命中、图关系覆盖和回答参考实体覆盖；Gold Recall@3低于Vector-only，说明图谱也会补入同一关系下正确但不在固定参考子集中的实体。后续仍需独立专家标注和融合权重实验。",
+            "结果解读：扩展集上混合检索提高了 Top-3 命中率、图关系覆盖率和回答参考实体覆盖率；其参考实体召回率@3低于纯向量检索，说明图谱也会补入同一关系下正确但不在固定参考子集中的实体。后续仍需独立专家标注和融合权重实验。",
             "",
             "`无证据陈述率`只检查编号陈述是否带有效引用，以及陈述能否直接回查到引用证据；它是可复现的规则代理，不等于真正的语义幻觉率。",
             "",
             "## 每题 Top-3 结果",
             "",
-            "| Case | 意图 | Vector raw/rerank | Hybrid raw/rerank | Hybrid 回答覆盖 |",
+            "| 用例 | 意图 | 纯向量：原始/重排 | 混合检索：原始/重排 | 混合检索回答覆盖率 |",
             "|---|---|---:|---:|---:|",
         ]
     )
@@ -359,7 +359,7 @@ def _render_markdown(report: Mapping[str, object]) -> str:
             "python -m src.evaluation.runner",
             "```",
             "",
-            "完整机器可读结果位于 `results/evaluation/phase9_metrics.json`；待外部 Judge 评审的输入位于同目录的 `phase9_metrics.judge_requests.jsonl`。",
+            "完整机器可读结果位于 `results/evaluation/phase9_metrics.json`；待外部裁判模型评审的输入位于同目录的 `phase9_metrics.judge_requests.jsonl`。",
             "",
         ]
     )

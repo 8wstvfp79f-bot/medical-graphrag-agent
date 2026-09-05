@@ -119,8 +119,8 @@ def aggregate_judge_results(
         "hallucination_absolute_reduction": absolute_reduction,
         "hallucination_relative_reduction": relative_reduction,
         "metric_definition": (
-            "A case is marked hallucinated when the judge lists one or more "
-            "unsupported claims or faithfulness is below the configured threshold."
+            "当裁判模型列出一项或多项无证据支持的陈述，或忠实度低于"
+            "设定阈值时，该用例被标记为存在语义幻觉。"
         ),
     }
 
@@ -135,26 +135,26 @@ def render_markdown(report: Mapping[str, object]) -> str:
     hybrid = dict(summary.get("hybrid", {}))
     metadata = dict(report.get("metadata", {}))
     lines = [
-        "# LLM-as-a-Judge 语义评测报告",
+        "# 大模型裁判（LLM-as-a-Judge）语义评测报告",
         "",
         f"- 生成时间（UTC）：{metadata.get('generated_at')}",
-        f"- Judge模型：`{metadata.get('model')}`",
-        f"- Prompt版本：`{metadata.get('prompt_version')}`",
+        f"- 裁判模型：`{metadata.get('model')}`",
+        f"- 提示词版本：`{metadata.get('prompt_version')}`",
         f"- 完成/失败：{metadata.get('completed_requests')}/{metadata.get('failed_requests')}",
-        f"- Faithfulness阈值：{summary.get('faithfulness_threshold')}",
-        "- 评测口径：存在Unsupported Claim，或Faithfulness低于阈值，即记为语义幻觉题目。",
+        f"- 忠实度阈值：{summary.get('faithfulness_threshold')}",
+        "- 评测口径：存在无证据支持的陈述，或忠实度低于阈值，即记为语义幻觉题目。",
         "",
-        "| 指标 | Vector-only | Hybrid |",
+        "| 指标 | 纯向量检索 | 混合检索 |",
         "|---|---:|---:|",
-        f"| 平均Faithfulness | {_percent(vector.get('average_faithfulness'))} | {_percent(hybrid.get('average_faithfulness'))} |",
-        f"| 平均Relevance | {_percent(vector.get('average_relevance'))} | {_percent(hybrid.get('average_relevance'))} |",
-        f"| 平均Completeness | {_percent(vector.get('average_completeness'))} | {_percent(hybrid.get('average_completeness'))} |",
+        f"| 平均忠实度 | {_percent(vector.get('average_faithfulness'))} | {_percent(hybrid.get('average_faithfulness'))} |",
+        f"| 平均相关性 | {_percent(vector.get('average_relevance'))} | {_percent(hybrid.get('average_relevance'))} |",
+        f"| 平均完整性 | {_percent(vector.get('average_completeness'))} | {_percent(hybrid.get('average_completeness'))} |",
         f"| 语义幻觉题目占比 | {_percent(vector.get('semantic_hallucination_case_rate'))} | {_percent(hybrid.get('semantic_hallucination_case_rate'))} |",
         "",
         f"- 幻觉率绝对下降：{_percent(summary.get('hallucination_absolute_reduction'))}",
         f"- 幻觉率相对下降：{_percent(summary.get('hallucination_relative_reduction'))}",
         "",
-        "本报告是模型评审结果，不是临床安全认证。当前固定集来自项目清洗数据，尚未经过独立临床专家标注；若生成与Judge使用同一模型，还应注明可能存在自评偏差。",
+        "本报告是模型评审结果，不是临床安全认证。当前固定集来自项目清洗数据，尚未经过独立临床专家标注；若回答生成与裁判使用同一模型，还应注明可能存在自评偏差。",
         "",
     ]
     return "\n".join(lines)
