@@ -4,9 +4,6 @@
 
 这是一个面向求职展示的医疗知识增强型 GraphRAG Agent 项目。系统以公开疾病百科数据为知识源，目标是构建“向量检索 + 图谱关系扩展 + 重排 + 受控生成 + 自动评测”的可解释医疗问答后端。
 
-## Project Boundary
-
-本仓库只对应简历中的“项目一：医疗知识增强型问答智能体 GraphRAG Agent”。Q-Learning、Bradley-Terry、Preference Dataset、RewardModel 和多目标 Agent Evaluation 属于独立项目，不放入本仓库，避免两条项目叙事互相污染。
 
 ## Why GraphRAG
 
